@@ -1,0 +1,45 @@
+stages:
+  - lambda_image_building
+  - provisioning_infra
+
+
+lambda_image_building:
+  stage: lambda_image_building
+  image: nexus.pitneycloud.com:8443/fusion-platform/awscli-docker:latest
+  tags:
+    - fusion-docker
+  script:
+    - echo "publishing Docker image to ECR"
+    - $(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})
+    - aws ecr describe-repositories --region $AWS_DEFAULT_REGION --repository-names $PROJECT_NAME || aws ecr create-repository --region $AWS_DEFAULT_REGION --repository-name $PROJECT_NAME
+    - aws ecr describe-repositories --region ${AWS_DEFAULT_REGION} --repository-names $PROJECT_NAME > output.json
+    - REPOSITORY_URL=$(cat output.json | jq -r .repositories[].repositoryUri)
+    - docker build --build-arg ACCESS_KEY_ID_VAR=$AWS_ACCESS_KEY_ID --build-arg SECRET_ACCESS_KEY_VAR=$AWS_SECRET_ACCESS_KEY -t ${REPOSITORY_URL}:latest .
+    - docker push  ${REPOSITORY_URL}:latest
+    - docker rmi  ${REPOSITORY_URL}:latest # Removing docker image
+  environment:
+    name: $CI_COMMIT_REF_NAME
+
+
+provisioning_infra:
+  image: nexus.pitneycloud.com:8443/fusion-platform/awscli-docker:latest
+  stage: provisioning_infra
+  tags:
+    - fusion-docker
+  script:
+    - cd config
+    - wget https://releases.hashicorp.com/terraform/1.3.7/terraform_1.3.7_linux_amd64.zip
+    - unzip terraform_1.3.7_linux_amd64.zip
+    - mv terraform /usr/local/bin
+    - terraform --version
+    - echo $BUCKET_NAME
+    - echo $PROJECT_NAME
+    - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=terraform/${PROJECT_NAME}/${envType}/terraform.tfstate" -backend-config="region=$TF_VAR_CLOUD_REGION"
+    - terraform plan -out "planfile"
+    - terraform apply -input=false "planfile"
+  environment:
+    name: $CI_COMMIT_REF_NAME
+  when: manual
+
+
+
