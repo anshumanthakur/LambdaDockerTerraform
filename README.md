@@ -29,3 +29,23 @@ Configure your GitLab CI/CD pipeline according to your requirements and set up t
 Commit and push your changes to trigger the CI/CD pipeline.
 
 Monitor the pipeline execution and verify that the containerized Lambdas are successfully deployed.
+
+**The GitLab variables needed in this GitLab project are:**
+
+**$AWS_DEFAULT_REGION**: AWS region for the ECR and other AWS CLI commands.
+
+**$PROJECT_NAME**: Name of the repository or project.
+
+**$AWS_ACCESS_KEY_ID**: AWS access key ID for authentication.
+
+**$AWS_SECRET_ACCESS_KEY**: AWS secret access key for authentication.
+
+**$CI_COMMIT_REF_NAME**: Git branch or ref name used for environment naming and provisioning.
+
+**$BUCKET_NAME**: Name of the S3 bucket used for Terraform backend storage.
+
+**$TF_VAR_CLOUD_REGION**: Cloud region used for Terraform backend configuration.
+
+These variables are referenced in the script sections of the lambda_image_building and provisioning_infra stages for various purposes such as AWS CLI commands, Docker image building and pushing, Terraform initialization, and provisioning infrastructure.
+
+Please ensure that these variables are properly defined and provided with their respective values in your GitLab CI/CD pipeline configuration or CI/CD variables settings.
