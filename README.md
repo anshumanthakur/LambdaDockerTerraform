@@ -1,7 +1,9 @@
 **LambdaDockerTerraform**
+
 LambdaDockerTerraform is a project that enables the deployment of containerized Lambdas using Terraform and GitLab CI/CD. This repository provides the necessary code, configuration, and CI/CD pipeline setup to automate the deployment process and manage the infrastructure required for running Lambdas in a containerized environment.
 
 **Features**
+
 Containerization of Lambdas: The project leverages Docker containers to package and run Lambdas, allowing for easier management and portability.
 
 Infrastructure as Code: Terraform is used to define and provision the necessary AWS resources, such as Amazon Elastic Container Registry (ECR), Amazon Elastic Container Service (ECS), and AWS Lambda, ensuring consistent and reproducible infrastructure deployments.
@@ -11,6 +13,7 @@ GitLab CI/CD Integration: The project includes a GitLab CI/CD pipeline configura
 Scalability and Resilience: By utilizing AWS services like ECS, Lambdas can be automatically scaled based on demand and benefit from the built-in fault tolerance mechanisms.
 
 **Getting Started**
+
 To get started with LambdaTerra, follow these steps:
 
 Clone this repository to your local machine.
