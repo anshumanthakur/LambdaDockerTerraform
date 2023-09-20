@@ -1,4 +1,5 @@
 stages:
+#stage for lamnda image buildimng
   - lambda_image_building
   - provisioning_infra
 
